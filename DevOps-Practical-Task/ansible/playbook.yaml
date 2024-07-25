@@ -1,0 +1,55 @@
+---
+- name: Configure Nginx and Deploy Node.js App
+  hosts: web_servers
+  become: yes
+  tasks:
+    - name: Update apt and install dependencies
+      apt:
+        update_cache: yes
+        name: ['nginx', 'nodejs', 'npm']
+        state: latest
+
+    - name: Start and enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy Nginx configuration
+      copy:
+        src: /path/to/nginx.conf
+        dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Reload Nginx
+
+    - name: Copy Node.js application code
+      copy:
+        src: /path/to/node_app/
+        dest: /app/
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Install Node.js dependencies
+      command: npm install
+      args:
+        chdir: /app
+
+    - name: Start Node.js application
+      command: node app.js
+      args:
+        chdir: /app
+      notify:
+        - Restart Node.js
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+
+    - name: Restart Node.js
+      command: pkill node
