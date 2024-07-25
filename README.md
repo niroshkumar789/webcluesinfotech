@@ -12,7 +12,7 @@ Simple Node.js Application Deployment on Docker Container
 
 Dockerfile: Configures a Docker image for a Node.js application listening on port 3000.
 
-Kubernetes Deployment
+Kubernetes Deployment,Service,PodDisruptionBudget
 
 Kubernetes Deployment YAML: Defines a deployment for a web application with 3 replicas using the nginx:latest image, including liveness and readiness probes, and guaranteed QoS.
 
@@ -40,7 +40,7 @@ Steps
 Build Docker Image:
 
 
-docker build -t <username>/node-app:latest .
+docker build -t node-app:latest .
 Run Docker Container:
 
 docker run -p 3000:3000 <your-docker-username>/node-app:latest
